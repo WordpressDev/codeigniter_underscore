@@ -27,10 +27,10 @@
 
 class Welcome extends CI_Controller {
 
-
+	// simple test function to ensure everything is set up correctly 
+	// and you know how it works
 	public function index()
 	{
-		//$this->load->library('underscore');
 
 		require_once(APPPATH.'libraries/underscore.php');
 
@@ -39,6 +39,7 @@ class Welcome extends CI_Controller {
 
 	}
 
+	// if you don't want to just import the sql, create models here
 	public function create_models()
 	{
 		$this->load->helper('string');
@@ -46,10 +47,9 @@ class Welcome extends CI_Controller {
 			$insert['name'] = random_string('alpha', 11);
 			$this->db->insert('model', $insert);
 		}
-		
-
 	}
 
+	// if you don't want to just import the sql, create items here
 	public function create_items()
 	{
 		$this->load->helper('string');
@@ -61,22 +61,19 @@ class Welcome extends CI_Controller {
 				$insert['name'] = random_string('alpha', 11);
 				$this->db->insert('item', $insert);
 			}
-		}
-	
+		}	
 	}
 
-	//0.1821
+	//Base time on function with join
 	public function test_1()
 	{
 		$this->output->enable_profiler(TRUE);
 
 		$sql = 'SELECT * FROM model m JOIN item i ON (m.id = i.model_id)';
 		$query = $this->db->query($sql)->result_array();
-
-
 	}
 
-	//17.1630 -- 1.2620
+	// Time a "machine gun" approach
 	public function test_2()
 	{
 		$this->output->enable_profiler(TRUE);
@@ -91,7 +88,7 @@ class Welcome extends CI_Controller {
 		}	
 	}
 
-	//0.2968
+	// Use a single query and Underscore.php
 	public function test_3()
 	{
 
@@ -99,10 +96,12 @@ class Welcome extends CI_Controller {
 
 		require_once(APPPATH.'libraries/underscore.php');
 
-		$sql = 'SELECT * FROM model m JOIN item i ON (m.id = i.model_id)';
+		$sql = 'SELECT *, m.name AS model_name FROM model m JOIN item i ON (m.id = i.model_id)';
 		$query = $this->db->query($sql)->result_array();
 
-		$grouped_result = __()->groupBy($query, 'model_id');
+		$grouped_result = __()->groupBy($query, 'model_name');
+
+		var_dump($grouped_result);
 	}
 
 
